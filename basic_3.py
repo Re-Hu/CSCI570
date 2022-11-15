@@ -1,5 +1,6 @@
 import time
 import psutil
+import sys
 
 
 def process_memory():
@@ -134,15 +135,13 @@ def basic_algorithm(s1, s2):
 
 
 if __name__ == '__main__':
-    # string = {'ACGT': [3, 6, 1, 1, 5, 6, 7, 8, 9, 20], 'TACG': [1, 2, 0, 4, 3, 2, 0, 5, 6, 17]}
-    inputfile = "input4.txt"
-    outfile_b = "outputbasic.txt"
-    outfile_e = "outputefficient.txt"
+    inputfile = sys.argv[1]
+    outfile = sys.argv[2]
+    print("input", inputfile, outfile)
     string, index_li = ReadInput(inputfile)
     str1, str2 = extensiont(string, index_li)
     # str1, str2 = extensiont(string)
     # print("s1:", str1, "s2:", str2)
     results = basic_algorithm(str1, str2)
     cost, alignment_1, alignment_2, time_used, memory_used = basic_algorithm(str1, str2)
-    WriteOutput(outfile_b, cost, alignment_1, alignment_2, time_used, memory_used)
-    # print("result", results)
+    WriteOutput(outfile, cost, alignment_1, alignment_2, time_used, memory_used)

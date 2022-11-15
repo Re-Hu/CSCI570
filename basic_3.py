@@ -1,28 +1,66 @@
 import time
 import psutil
 
+
 def process_memory():
     process = psutil.Process()
     memory_info = process.memory_info()
-    memory_consumed = int(memory_info.rss/1024)
+    memory_consumed = int(memory_info.rss / 1024)
     return memory_consumed
+
 
 def time_wrapper():
     start_time = time.time()
     basic_algorithm()
     end_time = time.time()
-    time_taken = (end_time - start_time)*1000
+    time_taken = (end_time - start_time) * 1000
     return time_taken
 
-def extensiont(string):
-    keys = list(string.keys())     # bug when two input word are the same!!!!!
-    word1 = keys[0]
-    word2 = keys[1]
-    for i in string[word1]:
+
+def ReadInput(inputfile):
+    with open(inputfile, 'r') as f:
+        lines = f.readlines()
+        # word = {}
+        word = []
+        word_index = -1
+        index = []
+        string = ""
+        for i in lines:
+            line = i.strip()
+            if not line.isdigit():
+                # word[line.strip()] = []
+                word.append(line.strip())
+                word_index += 1
+                index.append([])
+                # string = line.strip()
+            else:
+                # word[string].append(int(line.strip()))
+                index[word_index].append(int(line.strip()))
+
+    print("re", word, index)
+    return word, index
+
+def WriteOutput(outfile, cost, line1, line2, time, memory):
+    with open(outfile, 'w') as f:
+        f.write(str(cost) + "\n")
+        f.write(line1 + "\n")
+        f.write(line2 + "\n")
+        f.write(str(time) + "\n")
+        f.write(str(memory) + "\n")
+
+def extensiont(string, index_li):
+    # keys = list(string.keys())
+    # print("keys", keys)
+    word1 = string[0]
+    word2 = string[1]
+    # print("keys", word1, word2)
+    for i in index_li[0]:
         word1 = word1[:i+1] + word1 + word1[i+1:]
-    for j in string[word2]:
+    for j in index_li[1]:
         word2 = word2[:j + 1] + word2 + word2[j + 1:]
+    # print("word", word1, word2)
     return word1, word2
+
 
 delta = 30
 alphas = [[0, 110, 48, 94],
@@ -31,13 +69,13 @@ alphas = [[0, 110, 48, 94],
           [94, 48, 110, 0]]
 map_alphaIdx = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
 
+
 def basic_algorithm(s1, s2):
-    
-    cost = 0    # cost of the alignment (integer)
-    alignment_1 = ""    # first string alignment
-    alignment_2 = ""    # second string alignment
-    time_used = 0.0     # time in milliseconds (float)
-    memory_used = 0.0   # memory in kilobytes (float)
+    cost = 0  # cost of the alignment (integer)
+    alignment_1 = ""  # first string alignment
+    alignment_2 = ""  # second string alignment
+    time_used = 0.0  # time in milliseconds (float)
+    memory_used = 0.0  # memory in kilobytes (float)
 
     start_time = time.time()
     start_memory = process_memory()
@@ -45,7 +83,7 @@ def basic_algorithm(s1, s2):
     # basic sequence alignment algorithm - dynamic programming
     m = len(s1)
     n = len(s2)
-    dp = [[0]*(n + 1) for i in range(m + 1)]
+    dp = [[0] * (n + 1) for i in range(m + 1)]
     print("m:", m, "n:", n)
 
     # base cases
@@ -83,7 +121,7 @@ def basic_algorithm(s1, s2):
 
     # calculate time taken
     end_time = time.time()
-    time_used = (end_time - start_time)*1000
+    time_used = (end_time - start_time) * 1000
 
     # calculate memory taken
     end_memory = process_memory()
@@ -94,9 +132,17 @@ def basic_algorithm(s1, s2):
 
     return cost, alignment_1, alignment_2, time_used, memory_used
 
+
 if __name__ == '__main__':
-    string = {'ACGT':[3,6,1,1,5,6,7,8,9,20], 'TACG':[1,2,0,4,3,2,0,5,6,17]}
-    str1, str2 = extensiont(string)
-    print("s1:", str1, "s2:", str2)
+    # string = {'ACGT': [3, 6, 1, 1, 5, 6, 7, 8, 9, 20], 'TACG': [1, 2, 0, 4, 3, 2, 0, 5, 6, 17]}
+    inputfile = "input4.txt"
+    outfile_b = "outputbasic.txt"
+    outfile_e = "outputefficient.txt"
+    string, index_li = ReadInput(inputfile)
+    str1, str2 = extensiont(string, index_li)
+    # str1, str2 = extensiont(string)
+    # print("s1:", str1, "s2:", str2)
     results = basic_algorithm(str1, str2)
-    print(results)
+    cost, alignment_1, alignment_2, time_used, memory_used = basic_algorithm(str1, str2)
+    WriteOutput(outfile_b, cost, alignment_1, alignment_2, time_used, memory_used)
+    # print("result", results)

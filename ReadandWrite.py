@@ -11,7 +11,7 @@ import psutil
 
 # inputfile = sys.argv[1]
 # outfile = sys.argv[2]
-inputfile = "input1.txt"
+inputfile = "input4.txt"
 outfile_b = "outputbasic.txt"
 outfile_e = "outputefficient.txt"
 def process_memory():
@@ -30,17 +30,25 @@ def time_wrapper():
 def ReadInput(inputfile):
     with open(inputfile, 'r') as f:
         lines = f.readlines()
-        word = {}
+        # word = {}
+        word = []
+        word_index = -1
+        index = []
         string = ""
         for i in lines:
             line = i.strip()
             if not line.isdigit():
-                word[line.strip()] = []
-                string = line.strip()
+                # word[line.strip()] = []
+                word.append(line.strip())
+                word_index += 1
+                index.append([])
+                # string = line.strip()
             else:
-                word[string].append(int(line.strip()))
-    # print(word)
-    return word
+                # word[string].append(int(line.strip()))
+                index[word_index].append(int(line.strip()))
+
+    print("re", word, index)
+    return word, index
 
 def WriteOutput(outfile, cost, line1, line2, time, memory):
     with open(outfile, 'w') as f:
@@ -50,16 +58,19 @@ def WriteOutput(outfile, cost, line1, line2, time, memory):
         f.write(str(time) + "\n")
         f.write(str(memory) + "\n")
 
-def extensiont(string):
-    keys = list(string.keys())
-    word1 = keys[0]
-    word2 = keys[1]
-    for i in string[word1]:
+def extensiont(string, index_li):
+    # keys = list(string.keys())
+    # print("keys", keys)
+    word1 = string[0]
+    word2 = string[1]
+    # print("keys", word1, word2)
+    for i in index_li[0]:
         word1 = word1[:i+1] + word1 + word1[i+1:]
-    for j in string[word2]:
+    for j in index_li[1]:
         word2 = word2[:j + 1] + word2 + word2[j + 1:]
+    # print("word", word1, word2)
     return word1, word2
 
-w = ReadInput(inputfile)
-line1, line2 = extensiont(w)
+string, index_li = ReadInput(inputfile)
+line1, line2 = extensiont(string, index_li)
 WriteOutput(outfile_b, 0, line1, line2, 0, 0)

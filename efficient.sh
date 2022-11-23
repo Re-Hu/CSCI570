@@ -1,1 +1,0 @@
-python3 efficient_3.py 
